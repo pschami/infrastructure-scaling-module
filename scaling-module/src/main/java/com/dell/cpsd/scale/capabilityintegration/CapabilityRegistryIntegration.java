@@ -222,7 +222,7 @@ public class CapabilityRegistryIntegration
 
     private Capability createLookupCapability()
     {
-    	 // create the endpoint registry endpoint and capability
+    	 // create the Scaling Module endpoint and capability
         AmqpProviderEndpointBuilder endpointBuilder = new AmqpProviderEndpointBuilder(AMQP_PROTOCOL);
 
         // TODO: Extract these properties/capabilities.

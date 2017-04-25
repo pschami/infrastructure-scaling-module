@@ -23,7 +23,7 @@ import com.dell.cpsd.common.rabbitmq.context.builder.DefaultContainerErrorHandle
 import com.dell.cpsd.scale.consumer.ScalingModuleConsumer;
 
 /**
- * The Endpoint Registration Consumer Spring Config class
+ * The Scaling Module Consumer Spring Config class
  * <p>
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>
@@ -62,19 +62,19 @@ public class ScalingModuleConsumerConfig
      * @return Simple message listener container
      */
     @Bean
-    SimpleMessageListenerContainer endpointRegistrationListenerContainer()
+    SimpleMessageListenerContainer scalingModuleListenerContainer()
     {
         final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(rabbitConnectionFactory);
         container.setAcknowledgeMode(AcknowledgeMode.AUTO);
         container.setQueues(queryRequestQueue);
         container.setMessageListener(scalingModuleListener());
-        container.setErrorHandler(new DefaultContainerErrorHandler("endpointRegistrationListenerContainer"));
+        container.setErrorHandler(new DefaultContainerErrorHandler("scalingModuleListenerContainer"));
         return container;
     }
 
     /**
-     * This is the message listener for Endpoint Registration listener container.
+     * This is the message listener for Scaling Module listener container.
      *
      * @return Default message listener
      */

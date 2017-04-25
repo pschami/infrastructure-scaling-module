@@ -12,7 +12,7 @@ import com.dell.cpsd.common.rabbitmq.consumer.handler.MessageHandler;
 import com.dell.cpsd.scale.api.ApplicationPerformanceEvent;
 
 /**
- * This class handles the query request for endpoints.
+ * This class handles Scaling Module messages.
  * <p>
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>

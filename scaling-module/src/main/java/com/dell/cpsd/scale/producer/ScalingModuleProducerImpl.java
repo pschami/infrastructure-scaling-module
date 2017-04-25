@@ -13,7 +13,7 @@ import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 /**
- * Endpoint registration Producer implementation class.
+ * Scaling Module Producer implementation class.
  * <p>
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>
@@ -42,7 +42,7 @@ public class ScalingModuleProducerImpl implements ScalingModuleProducer
     {
         if (event == null)
         {
-            throw new ScalingModuleException("Endpoint discovered message is null.");
+            throw new ScalingModuleException("Scaling Module message is null.");
         }
 
         rabbitTemplate.convertAndSend(applicationPerformanceEventExchange.getName(),
