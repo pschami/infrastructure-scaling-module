@@ -1,0 +1,32 @@
+# Copyright (c) 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
+# Dell EMC Confidential/Proprietary Information
+
+version: '2'
+
+services:
+
+  scaling-module:
+    image: cpsd-scaling-module-service
+    container_name: symphony-scaling-module
+    network_mode: "host"
+    ports:
+     - 8070:8080
+    depends_on:
+     - vcenter-adapter
+     - rackhd-adapter
+     - coprhd-adapter
+
+  vcenter-adapter:
+    image: cpsd-vcenter-adapter-service
+    container_name: symphony-vcenter-adapter-service
+    network_mode: "host"
+
+  rackhd-adapter:
+    image: cpsd-rackhd-adapter-service
+    container_name: symphony-rackhd-adapter-service
+    network_mode: "host"
+
+  coprhd-adapter:
+    image: cpsd-coprhd-adapter-service
+    container_name: symphony-coprhd-adapter-service
+    network_mode: "host"
