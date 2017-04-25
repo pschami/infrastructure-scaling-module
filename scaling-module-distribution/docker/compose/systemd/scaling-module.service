@@ -1,0 +1,11 @@
+[Unit]
+Description=APM Nagios service
+After=network.target docker.service dell-services.service
+[Service]
+Type=simple
+WorkingDirectory=/opt/dell
+Environment=HOSTNAME=%H
+ExecStart=/usr/bin/docker-compose -f /opt/dell/scaling-module/install/docker-compose.yml up
+ExecStop=/usr/bin/docker-compose -f /opt/dell/scaling-module/install/docker-compose.yml down
+[Install]
+WantedBy=multi-user.target

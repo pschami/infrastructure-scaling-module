@@ -1,3 +1,14 @@
+properties([
+    pipelineTriggers([
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'common-client-parent-master'),
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'common-messaging-parent-master'),
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'hdp-capability-registry-client-master'),
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'symphony-root-parent-master'),
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'virtualization-capabilities-api-master'),
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'coprhd-adapter-parent-master'),
+      upstream(threshold: hudson.model.Result.SUCCESS, upstreamProjects: 'rackhd-adapter-parent-master')
+  ])
+])
 pipeline {    
     agent {
         node{
@@ -19,22 +30,33 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh "mvn compile"
+                sh "mvn -U clean compile"
             }
         }
-        stage('Unit Testing') {
+        stage('Prepare test services') {
             steps {
-                sh "mvn test"
+                sh "docker-compose -f ${WORKSPACE}/ci/docker/docker-compose.yml pull"
+                sh "docker-compose -f ${WORKSPACE}/ci/docker/docker-compose.yml up --force-recreate -d"
             }
         }
+        stage('Integration Test') {
+            steps {
+                sh "docker exec scaling-module-test-${BUILD_NUMBER} mvn clean verify -DskipDocker=true"
+            }
+        }
+	stage('Package') {
+		steps {
+                sh "mvn package -DskipTests -DskipITs"
+            }
+	}
         stage('Deploy') {
-            when {
+	    when {
                 expression {
                     return env.BRANCH_NAME ==~ /master|release\/.*/
                 }
             }
             steps {
-                sh "mvn clean deploy"
+                sh "mvn help:active-profiles deploy -DskipTests -DskipITs -P buildDockerImageOnJenkins -Ddocker.registry=docker-dev-local.art.local"
             }
         }
         stage('SonarQube Analysis') {
@@ -53,7 +75,12 @@ pipeline {
                 }
             }
         }
-         stage('NexB Scan') {
+        stage('NexB Scan') {
+	    when {
+                expression {
+                    return env.BRANCH_NAME ==~ /master|release\/.*/
+                }
+            }
             steps {
                 dir('/opt') {
                     checkout([$class: 'GitSCM', 
@@ -62,19 +89,15 @@ pipeline {
                               extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'nexB']], 
                               submoduleCfg: [], 
                               userRemoteConfigs: [[url: 'https://github.com/nexB/scancode-toolkit.git']]])
-                }
-				
-		    sh "mkdir -p /opt/nexB/nexb-output/"
-       
-		    sh "sh /opt/nexB/scancode --help"
-                    sh "sh /opt/nexB/scancode --format html ${WORKSPACE} /opt/nexB/nexb-output/api-gateway-parent.html"
-		    sh "sh /opt/nexB/scancode --format html-app ${WORKSPACE} /opt/nexB/nexb-output/api-gateway-parent-grap.html"
-	       
-	            sh "mv /opt/nexB/nexb-output/ ${WORKSPACE}/"
-	       	    archiveArtifacts '**/nexb-output/**'
+                }				
+            	sh "mkdir -p /opt/nexB/nexb-output/"
+                sh "sh /opt/nexB/scancode --help"
+                sh "sh /opt/nexB/scancode --format html ${WORKSPACE} /opt/nexB/nexb-output/scaling-module-parent.html"
+                sh "sh /opt/nexB/scancode --format html-app ${WORKSPACE} /opt/nexB/nexb-output/scaling-module-parent-grap.html"	       
+	        sh "mv /opt/nexB/nexb-output/ ${WORKSPACE}/"
+	       	archiveArtifacts '**/nexb-output/**'
             }
         }
-        
         stage('Third Party Audit') {
             steps {
                 sh '''
@@ -85,9 +108,39 @@ pipeline {
                 archiveArtifacts '**/dependency-analysis.html, **/THIRD-PARTY.txt, **/dependency-check-report.html, **/dependency-tree.dot'
             }
         }
+        stage('Github Release') {
+            when {
+                expression {
+                    return env.BRANCH_NAME ==~ /release\/.*/
+                }
+            }
+            steps {
+                dir('/opt'){
+                    sh "rm -f linux-amd64-github-release.tar.bz2"
+                    sh "wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2"
+                    sh "tar -xvjf linux-amd64-github-release.tar.bz2"
+                    sh "yes | cp bin/linux/amd64/github-release /usr/bin/"
+                    sh '''
+                        github-release release \
+                            --user dellemc-symphony \
+                            --repo  scaling-module-parent \
+                            --tag v0.0.1-${BRANCH_NAME}-${BUILD_ID} \
+                            --name "scaling-module-parent release" \
+                            --description "scaling-module-parent release"
+                        github-release upload \
+                            --user dellemc-symphony \
+                            --repo scaling-module-parent \
+                            --tag v0.0.1-${BRANCH_NAME}-${BUILD_ID} \
+                            --name "scaling-module-parent release" \
+                            --file ${WORKSPACE}/target/scaling-module-parent-1.0-SNAPSHOT.jar
+                    '''
+                }
+            }
+        }
     }
     post {
         always{
+            sh "docker-compose -f ${WORKSPACE}/ci/docker/docker-compose.yml down --rmi 'all' -v --remove-orphans"
             step([$class: 'WsCleanup'])   
         }
         success {
