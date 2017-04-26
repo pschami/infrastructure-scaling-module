@@ -19,8 +19,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.dell.cpsd.common.rabbitmq.consumer.handler.DefaultMessageListener;
+import com.dell.cpsd.common.rabbitmq.consumer.handler.MessageHandler;
 import com.dell.cpsd.common.rabbitmq.context.builder.DefaultContainerErrorHandler;
-import com.dell.cpsd.scale.consumer.ScalingModuleConsumer;
+import com.dell.cpsd.scale.consumer.ApplicationPerformanceEventHandler;
+import com.dell.cpsd.scale.consumer.TicketServiceResponseHandler;
+import com.dell.cpsd.scale.services.ScalingModuleService;
 
 /**
  * The Scaling Module Consumer Spring Config class
@@ -52,8 +55,15 @@ public class ScalingModuleConsumerConfig
     private MessageConverter              messageConverter;
   
 
+    
     @Autowired
-    private Queue queryRequestQueue;
+    private ScalingModuleService scalingModuleService;
+  
+    @Autowired
+    private Queue scaleApmEventsQueue;
+    
+    @Autowired
+    private Queue scaleResponseQueue;
 
     /**
      * This bean instantiates and returns the Simple message
@@ -67,7 +77,7 @@ public class ScalingModuleConsumerConfig
         final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(rabbitConnectionFactory);
         container.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        container.setQueues(queryRequestQueue);
+        container.setQueues(scaleApmEventsQueue, scaleResponseQueue);
         container.setMessageListener(scalingModuleListener());
         container.setErrorHandler(new DefaultContainerErrorHandler("scalingModuleListenerContainer"));
         return container;
@@ -79,18 +89,25 @@ public class ScalingModuleConsumerConfig
      * @return Default message listener
      */
     @Bean
-    ScalingModuleConsumer scalingModuleMessageHandler()
+    ApplicationPerformanceEventHandler applicationPerformanceEventHandler()
     {
-        return new ScalingModuleConsumer();
+        return new ApplicationPerformanceEventHandler(scalingModuleService);
     }
 
 
     @Bean
     DefaultMessageListener scalingModuleListener()
     {
-    	return new DefaultMessageListener(messageConverter, scalingModuleMessageHandler());
+    	return new DefaultMessageListener(messageConverter, applicationPerformanceEventHandler(), ticketServiceResponseHandler());
 		
     }
- 
+    @Bean
+	TicketServiceResponseHandler ticketServiceResponseHandler() {
+		
+		 return new TicketServiceResponseHandler(scalingModuleService);
+		
+	}
+    
+   
 }
 

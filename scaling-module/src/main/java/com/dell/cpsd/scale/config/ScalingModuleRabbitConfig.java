@@ -31,6 +31,8 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
 import com.dell.cpsd.scale.api.ApplicationPerformanceEvent;
+import com.dell.cpsd.scale.api.TicketServiceRequest;
+import com.dell.cpsd.scale.api.TicketServiceResponse;
 import com.dell.cpsd.common.rabbitmq.MessageAnnotationProcessor;
 import com.dell.cpsd.common.rabbitmq.config.IRabbitMqPropertiesConfig;
 import com.dell.cpsd.hdp.capability.registry.api.RegisterCapabilityProviderMessage;
@@ -62,10 +64,15 @@ public class ScalingModuleRabbitConfig
     public static final  String BINDING_APM_REQUEST                      = "dell.cpsd.apm.request";
       
     /**
-     * The name of the ping queue for Scaling Module service
+     * The name of the request queue for Scaling Module service
      */
-    private static final String QUEUE_SCALE_REQUEST                        = "queue.dell.cpsd.scale.request";
+    private static final String QUEUE_SCALE_APM_EVENTS                        = "queue.dell.cpsd.scale.apm.events";
     
+    
+    /**
+     * The name of the response queue for Scaling Module service
+     */
+    private static final String QUEUE_SCALE_RESPONSE                        = "queue.dell.cpsd.scale.response";
     
     /*
      * The logger for this class.
@@ -83,7 +90,7 @@ public class ScalingModuleRabbitConfig
     /**
      * Scaling Module Event Exchange
      */
-    private static final String EXCHANGE_APPLICATION_PERFORMANCE_EVENT    = "exchange.dell.cpsd.apm.event";
+    private static final String EXCHANGE_APPLICATION_PERFORMANCE_EVENT    = "exchange.dell.cpsd.apm.nagios.event";
    
     /*
      * The RabbitMQ connection factory.
@@ -206,6 +213,8 @@ public class ScalingModuleRabbitConfig
         final List<Class<?>> messageClasses = new ArrayList<>();
 
         messageClasses.add(ApplicationPerformanceEvent.class);
+        messageClasses.add(TicketServiceRequest.class);
+        messageClasses.add(TicketServiceResponse.class);        
         messageClasses.add(RegisterCapabilityProviderMessage.class);
         messageClasses.add(UnregisterCapabilityProviderMessage.class);
 
@@ -233,26 +242,18 @@ public class ScalingModuleRabbitConfig
 
    
     @Bean
-    Queue queryRequestQueue()
+    Queue scaleApmEventsQueue()
     {
-        return new Queue(QUEUE_SCALE_REQUEST);
+        return new Queue(QUEUE_SCALE_APM_EVENTS);
     }
-
-   
-    /*
-     * TODO request queue binding
+    
     
     @Bean
-    public Binding endpointRegistrationRequestQueueBinding()
+    Queue scaleResponseQueue()
     {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(BINDING_APM_REQUEST);
-
-        String binding = builder.toString();
-
-        return BindingBuilder.bind(queryRequestQueue()).to(endpointRegistrationRequestExchange()).with(binding);
-    }*/
+        return new Queue(QUEUE_SCALE_RESPONSE);
+    }
+   
 
     /**
      * This returns the <code>AmqpAdmin</code> for the connection factory.

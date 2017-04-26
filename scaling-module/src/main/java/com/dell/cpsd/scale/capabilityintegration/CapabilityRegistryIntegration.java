@@ -101,7 +101,7 @@ public class CapabilityRegistryIntegration
     public CapabilityBinder CapabilityRegistryBinder(
             @Autowired ICapabilityRegistryLookupManager capabilityRegistryLookupManager,
             @Autowired AmqpAdmin amqpAdmin,
-            @Autowired @Qualifier("queryRequestQueue") Queue queue,
+            @Autowired @Qualifier("scaleApmEventsQueue") Queue queue,
             @Autowired String replyTo)
     {
         CapabilityBindingService bindingService = new AmqpRpcCapabilityBindingService(capabilityRegistryLookupManager, amqpAdmin, queue,
