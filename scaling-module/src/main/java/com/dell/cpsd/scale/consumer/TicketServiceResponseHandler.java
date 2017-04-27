@@ -54,8 +54,7 @@ public class TicketServiceResponseHandler implements MessageHandler<TicketServic
 	public void handleMessage(TicketServiceResponse message) throws Exception {
 		LOGGER.debug(message.toString());
 		
-	
-	
+		service.processTicketServiceResponse(message);
 		
 	}
 }

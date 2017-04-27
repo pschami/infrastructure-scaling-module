@@ -23,7 +23,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
 	"messageProperties",
     "requestType",
-	"requestMessage"
+	"requestMessage",
+    "eventId"
 })
 public class TicketServiceRequest implements HasMessageProperties<MessageProperties>  {
 
@@ -55,6 +56,14 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
      */
     @JsonProperty("requestMessage")
     private String requestMessage;
+    
+    /**
+     * 
+     * (Required)
+     * 
+     */
+    @JsonProperty("eventId")
+    private String eventId;
 
     /**
      * No args constructor for use in serialization
@@ -67,10 +76,11 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
      * 
      * @param requestType
      */
-    public TicketServiceRequest(String requestType, String requestMessage ) {
+    public TicketServiceRequest(String requestType, String requestMessage, String eventId) {
         super();
         this.requestType = requestType;
         this.requestMessage = requestMessage;
+        this.eventId = eventId;
     }
 
     /**
@@ -102,7 +112,7 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
      * (Required)
      * 
      * @return
-     *     The requestType
+     *     The requestMessage
      */
     @JsonProperty("requestMessage")
     public String getRequestMessage() {
@@ -113,12 +123,36 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
      * 
      * (Required)
      * 
-     * @param requestType
-     *     The requestType
+     * @param requestMessage
+     *     The requestMessage
      */
     @JsonProperty("requestMessage")
     public void setRequestMessage(String requestMessage) {
         this.requestMessage = requestMessage;
+    }
+    
+    /**
+     * 
+     * (Required)
+     * 
+     * @return
+     *     The eventId
+     */
+    @JsonProperty("eventId")
+    public String getEventId() {
+        return eventId;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     * @param eventId
+     *     The eventId
+     */
+    @JsonProperty("eventId")
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
     
     
@@ -143,7 +177,7 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(messageProperties).append(requestType).append(requestMessage).toHashCode();
+        return new HashCodeBuilder().append(messageProperties).append(requestType).append(requestMessage).append(eventId).toHashCode();
     }
 
     @Override
@@ -155,7 +189,7 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
             return false;
         }
         TicketServiceRequest rhs = ((TicketServiceRequest) other);
-        return (new EqualsBuilder().append(messageProperties, rhs.messageProperties).append(requestType, rhs.requestType).append(requestMessage, rhs.requestMessage).isEquals()) ;
+        return (new EqualsBuilder().append(messageProperties, rhs.messageProperties).append(requestType, rhs.requestType).append(requestMessage, rhs.requestMessage).append(eventId, rhs.eventId).isEquals()) ;
     }
 	
 

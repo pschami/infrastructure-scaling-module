@@ -53,7 +53,7 @@ public class ApplicationPerformanceEventHandler implements MessageHandler<Applic
 	public void handleMessage(ApplicationPerformanceEvent message) throws Exception {
 		LOGGER.debug(message.toString());
 		
-		service.createTicket(message);
+		service.processApplicationPerformanceEvent(message);
 	
 		
 	}
