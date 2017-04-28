@@ -31,6 +31,7 @@ import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryLookupMan
 import com.dell.cpsd.hdp.capability.registry.client.callback.ListCapabilityProvidersResponse;
 import com.dell.cpsd.scale.api.ApplicationPerformanceEvent;
 import com.dell.cpsd.scale.api.MessageProperties;
+import com.dell.cpsd.scale.api.TicketDetails;
 import com.dell.cpsd.scale.api.TicketServiceRequest;
 import com.dell.cpsd.scale.api.TicketServiceResponse;
 import com.dell.cpsd.scale.model.Event;
@@ -209,13 +210,15 @@ public class ScalingModuleService {
 				LOG.info("Execute New Event");
 				
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
+				TicketDetails ticketDetails = new TicketDetails("", "ApplicationPerformanceEvent", message.getDetails()); 
+				
 				requestMessage.setRequestMessage(message.getDetails());
-
 				requestMessage.setRequestType("create");
-				requestMessage.setEventId(event.getId().toString());
+				requestMessage.setEventId(event.getId().toString());			
+				requestMessage.setTicketDetails(ticketDetails);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -250,13 +253,14 @@ public class ScalingModuleService {
 				LOG.info("Execute Recommend");
 				
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
+				TicketDetails ticketDetails = new TicketDetails(message.getTicketDetails().getIncidentId(), "Update Ticket", "Here is the recommendation");
 				requestMessage.setRequestMessage("Here is the recommendation");
-
 				requestMessage.setRequestType("update");
 				requestMessage.setEventId(event.getId().toString());
+				requestMessage.setTicketDetails(ticketDetails);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -284,13 +288,15 @@ public class ScalingModuleService {
 				LOG.info("Execute Resolve");
 				
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
+				TicketDetails ticketDetails = new TicketDetails(message.getTicketDetails().getIncidentId(), "Approve Ticket", "Here is the approval");
 				requestMessage.setRequestMessage("Here is the approval");
 
 				requestMessage.setRequestType("approve");
 				requestMessage.setEventId(event.getId().toString());
+				requestMessage.setTicketDetails(ticketDetails);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -319,13 +325,15 @@ public class ScalingModuleService {
 				LOG.info("Execute Resolve");
 				
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
+				TicketDetails ticketDetails = new TicketDetails(message.getTicketDetails().getIncidentId(), "Close Ticket", "Here is the ticket being closed");
 				requestMessage.setRequestMessage("Here is the approval");
 
 				requestMessage.setRequestType("close");
 				requestMessage.setEventId(event.getId().toString());
+				requestMessage.setTicketDetails(ticketDetails);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
