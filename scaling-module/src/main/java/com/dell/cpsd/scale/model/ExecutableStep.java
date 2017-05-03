@@ -9,4 +9,6 @@ public interface ExecutableStep {
 
 	void executeStep(Event event, TicketServiceResponse message);
 
+	void executeApproval(Event event);
+
 }

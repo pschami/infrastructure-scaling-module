@@ -5,6 +5,7 @@ package com.dell.cpsd.scale; /**
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -25,7 +26,7 @@ import com.dell.cpsd.hdp.capability.registry.client.lookup.config.CapabilityRegi
 @EnableAsync
 @Import({CapabilityRegistryBindingManagerConfig.class, CapabilityRegistryLookupManagerConfig.class})
 
-public class Application extends AsyncConfigurerSupport
+public class Application extends SpringBootServletInitializer
 {
     public static void main(String[] args) throws Exception
     {

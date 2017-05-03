@@ -45,4 +45,9 @@ public class Step
 		
 	}
 
+	public void executeApproval(Event event) {
+		executableStep.executeApproval(event);
+		
+	}
+
 }

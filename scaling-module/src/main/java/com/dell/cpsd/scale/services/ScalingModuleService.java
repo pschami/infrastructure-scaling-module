@@ -99,7 +99,7 @@ public class ScalingModuleService {
 			event = new Event(eventId, message, newEvent);
 
 			LOG.info("createing new event for : {}", message);
-			LOG.info("Current Step : {}", event.getCurrentStep().getStepName());
+			LOG.debug("Current Step : {}", event.getCurrentStep().getStepName());
 
 			event.excuteCurrentStep(message);
 
@@ -121,23 +121,23 @@ public class ScalingModuleService {
 		if (event != null) {
 
 			String status = message.getResponseCode();
+			
+			String currentStep = event.getCurrentStep().getStepName();
+			LOG.debug("Current Step : {}", currentStep);
 
-			if ("SUCCESS".equals(status)) {
-				LOG.info("Current Step : {}", event.getCurrentStep().getStepName());
-				Step nextStep = workflowSteps.get(event.getCurrentStep().getStepName());
+			if ("SUCCESS".equals(status) && (currentStep.equals("resolve") == false) && (currentStep.equals("completed") == false)) {
 				
-				if(nextStep != null)
-				{				
+				Step nextStep = workflowSteps.get(currentStep);
+
+				if (nextStep != null) {
 					event.setCurrentStep(nextStep);
-					LOG.info("Next Step : {}", event.getCurrentStep().getStepName());
-					event.excuteCurrentStep(message);					
-					
-				}
-				else
-				{
-					//TODO delete event from repository
-					
-					LOG.info("Event Flow final step: {}", event.getCurrentStep().getStepName());
+					LOG.debug("Next Step : {}", event.getCurrentStep().getStepName());
+					event.excuteCurrentStep(message);
+
+				} else {
+					// TODO delete event from repository
+
+					LOG.debug("Event Flow final step: {}", event.getCurrentStep().getStepName());
 					eventRespository.delete(eventId);
 				}
 
@@ -148,6 +148,37 @@ public class ScalingModuleService {
 
 	}
 	
+	//TODO Tidy up state machine flow
+
+	public void processApproval(String eventId) {
+
+		Event event = eventRespository.find(UUID.fromString(eventId));
+
+		if (event != null) {
+			
+			String currentStep = event.getCurrentStep().getStepName();
+
+			LOG.info("Current Step : {}", currentStep);
+
+			event.excuteApproval();
+			
+			Step nextStep = workflowSteps.get(currentStep);
+
+			if (nextStep != null) {
+				event.setCurrentStep(nextStep);
+				LOG.info("Next Step : {}", event.getCurrentStep().getStepName());
+				event.excuteApproval();
+
+			}
+
+		}
+
+		else {
+			LOG.info("Unable to find event : {}", eventId);
+		}
+
+	}
+
 	private void sendRequest(TicketServiceRequest requestMessage) {
 		final String requiredCapability = "raise-service-ticket";
 		try {
@@ -159,11 +190,11 @@ public class ScalingModuleService {
 					LOG.debug("Found capability {}", capability.getProfile());
 
 					if (requiredCapability.equals(capability.getProfile())) {
-						LOG.debug("Found matching capability {}", capability.getProfile());
+						LOG.info("Found matching capability {}", capability.getProfile());
 						final List<EndpointProperty> endpointProperties = capability.getProviderEndpoint()
 								.getEndpointProperties();
-						final Map<String, String> amqpProperties = endpointProperties.stream().collect(
-								Collectors.toMap(EndpointProperty::getName, EndpointProperty::getValue));
+						final Map<String, String> amqpProperties = endpointProperties.stream()
+								.collect(Collectors.toMap(EndpointProperty::getName, EndpointProperty::getValue));
 
 						final String requestExchange = amqpProperties.get("request-exchange");
 						final String requestRoutingKey = amqpProperties.get("request-routing-key");
@@ -173,18 +204,18 @@ public class ScalingModuleService {
 						final String responseRoutingKey = amqpProperties.get("response-routing-key")
 								.replace("{replyTo}", "." + replyTo);
 
-						amqpAdmin.declareBinding(BindingBuilder.bind(scaleResponseQueue).to(responseExchange)
-								.with(responseRoutingKey));
+						amqpAdmin.declareBinding(
+								BindingBuilder.bind(scaleResponseQueue).to(responseExchange).with(responseRoutingKey));
 
-						LOG.debug("Adding binding {} {}", responseExchange.getName(), responseRoutingKey);
+						LOG.info("Adding binding {} {}", responseExchange.getName(), responseRoutingKey);
 
 						final UUID correlationId = UUID.randomUUID();
 
 						MessageProperties messageProperties = new MessageProperties();
 						messageProperties.setCorrelationId(correlationId.toString());
 						messageProperties.setReplyTo(replyTo);
-						messageProperties.setTimestamp(new Date());								
-						
+						messageProperties.setTimestamp(new Date());
+
 						requestMessage.setMessageProperties(messageProperties);
 
 						rabbitTemplate.convertAndSend(requestExchange, requestRoutingKey, requestMessage);
@@ -192,14 +223,23 @@ public class ScalingModuleService {
 					}
 				}
 			}
-		}	catch (CapabilityRegistryException e) {
+		} catch (CapabilityRegistryException e) {
 			LOG.error("Failed while looking up Capability Registry for {}", requiredCapability, e);
 		} catch (ServiceTimeoutException e) {
 			LOG.error("Service timed out while querying Capability Registry");
 		}
-		LOG.error("Unable to find required capability: {}", requiredCapability);
+		//LOG.error("Unable to find required capability: {}", requiredCapability);
 	}
 
+	private void updateIncident(Event event, String incidentId, String updateTitle, String updateMsg) {
+		TicketServiceRequest requestMessage = new TicketServiceRequest();
+		TicketDetails ticketDetails = new TicketDetails(incidentId, updateTitle, updateMsg);
+		requestMessage.setRequestMessage(updateMsg);
+		requestMessage.setRequestType("update");
+		requestMessage.setEventId(event.getId().toString());
+		requestMessage.setTicketDetails(ticketDetails);
+		sendRequest(requestMessage);
+	}
 
 	private ExecutableStep executeNewEvent() {
 		return new ExecutableStep() {
@@ -207,32 +247,29 @@ public class ScalingModuleService {
 			@Override
 			public void executeStep(Event event, ApplicationPerformanceEvent message) {
 
-				LOG.info("Execute New Event");
-				
+				LOG.info("Raising New Ticket for: "  +  message.getDetails());
+
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
-				TicketDetails ticketDetails = new TicketDetails("", "ApplicationPerformanceEvent", message.getDetails()); 
-				
+				TicketDetails ticketDetails = new TicketDetails("",
+						message.getHost() + message.getDetails().substring(0, 9), message.getDetails());
+
 				requestMessage.setRequestMessage(message.getDetails());
 				requestMessage.setRequestType("create");
-				requestMessage.setEventId(event.getId().toString());			
+				requestMessage.setEventId(event.getId().toString());
 				requestMessage.setTicketDetails(ticketDetails);
-				
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
 				sendRequest(requestMessage);
 
 			}
-			
 
-			
 			@Override
 			public void executeStep(Event event, TicketServiceResponse message) {
 				LOG.error("Execute New Event should not be called for TicketServiceResponse ");
+
+			}
+
+			@Override
+			public void executeApproval(Event event) {
+				LOG.error("Execute New Event, no manual approval step defined");
 
 			}
 		};
@@ -245,30 +282,45 @@ public class ScalingModuleService {
 			@Override
 			public void executeStep(Event event, ApplicationPerformanceEvent message) {
 				LOG.error("Execute Recommend should not be called for ApplicationPerformanceEvent ");
-				
+
 			}
 
 			@Override
 			public void executeStep(Event event, TicketServiceResponse message) {
-				LOG.info("Execute Recommend");
-				
-				TicketServiceRequest requestMessage = new TicketServiceRequest();
-				TicketDetails ticketDetails = new TicketDetails(message.getTicketDetails().getIncidentId(), "Update Ticket", "Here is the recommendation");
-				requestMessage.setRequestMessage("Here is the recommendation");
-				requestMessage.setRequestType("update");
-				requestMessage.setEventId(event.getId().toString());
-				requestMessage.setTicketDetails(ticketDetails);
-				
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+				for (int i = 0; i < 1; i++) {
+
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					LOG.info("Hardware Capacity Overload in DataCenter A, Unable to scale autonomously, recommending capacity expansion");
+
+					String incidentId = message.getTicketDetails().getIncidentId();
+					String updateTitle = "Update Ticket";
+
+					updateIncident(event, incidentId, updateTitle, event.getEventDetails().getDetails());
+
+					updateIncident(event, incidentId, updateTitle,
+							"[code]Hardware Capacity Overload in DataCenter A <br/><br/> No further hardware resources available, <br/><br/> Unable to scale autonomously Expand ESXi host capacity in Cluster 1. <br/><br/> ERP workload impacted[/code]");
+
+					updateIncident(event, incidentId, updateTitle, "Hardware Expansion required:  "
+							+ "[code]<br/><a href='http://localhost:8080/scale/api/approve/" + event.getId().toString()
+							+ "'>Review Changes</a><br/><a href='http://localhost:8080/scale/api/approve/"
+							+ event.getId().toString() + "'>Approve Changes</a><br/><br/>[/code] Request to deploy 4 Dell PowerEdge R630 HIGH-DENSITY: ALL-FLASH ");
+					
+					event.setIncidentId(incidentId);
 				}
 
-				sendRequest(requestMessage);
-				
-				
+			}
+
+			@Override
+			public void executeApproval(Event event) {
+				LOG.error("Execute Recommend, no manual approval step defined");
+
 			}
 		};
 
@@ -276,35 +328,48 @@ public class ScalingModuleService {
 
 	private ExecutableStep executeResolve() {
 		return new ExecutableStep() {
-			
+
 			@Override
 			public void executeStep(Event event, ApplicationPerformanceEvent message) {
 				LOG.error("Execute Resolve should not be called for ApplicationPerformanceEvent ");
-				
+
 			}
 
 			@Override
 			public void executeStep(Event event, TicketServiceResponse message) {
-				LOG.info("Execute Resolve");
+				LOG.info("Execute Resolve, no action taken, awaiting manual approval");
+
+			}
+
+			@Override
+			public void executeApproval(Event event) {
 				
+				LOG.info("Expansion Approved for Incident: " + event.getIncidentId());
+
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
-				TicketDetails ticketDetails = new TicketDetails(message.getTicketDetails().getIncidentId(), "Approve Ticket", "Here is the approval");
+				TicketDetails ticketDetails = new TicketDetails(event.getIncidentId(), "Update Ticket",
+						"Here is the recommendation ");
 				requestMessage.setRequestMessage("Here is the approval");
 
-				requestMessage.setRequestType("approve");
+				requestMessage.setRequestType("update");
 				requestMessage.setEventId(event.getId().toString());
 				requestMessage.setTicketDetails(ticketDetails);
-				
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
 				sendRequest(requestMessage);
 				
-				
+				updateIncident(event, event.getIncidentId(), "Update Ticket", "Approved by Jane Doe");
+				updateIncident(event, event.getIncidentId(), "Update Ticket", "Approved by Jane DoeVxRack Provisioning:"
+						+ "====Expansion Complete===="
+						+ "Successfully completed hardware expansion"
+						+ "======Details====="
+						+ "Configuring 9K5JMY1 172.17.1.7"
+						+ "Configuring 9K5JMY2 172.17.1.8"
+						+ "Configuring 9K5JMY3 172.17.1.9"
+						+ "Configuring 9K5JMY4 172.17.1.10"
+						+ "Installing ESXi……"
+						+ "Added to Cluster 1"
+						+ "");
+
 			}
 		};
 
@@ -312,36 +377,47 @@ public class ScalingModuleService {
 
 	private ExecutableStep executeComplete() {
 		return new ExecutableStep() {
-			
 
 			@Override
 			public void executeStep(Event event, ApplicationPerformanceEvent message) {
 				LOG.error("Execute Complete should not be called for ApplicationPerformanceEvent ");
-				
+
 			}
 
 			@Override
 			public void executeStep(Event event, TicketServiceResponse message) {
-				LOG.info("Execute Resolve");
-				
-				TicketServiceRequest requestMessage = new TicketServiceRequest();
-				TicketDetails ticketDetails = new TicketDetails(message.getTicketDetails().getIncidentId(), "Close Ticket", "Here is the ticket being closed");
-				requestMessage.setRequestMessage("Here is the approval");
+				LOG.info("Execute Complete, no action taken, awaiting manual approval");
 
-				requestMessage.setRequestType("close");
-				requestMessage.setEventId(event.getId().toString());
-				requestMessage.setTicketDetails(ticketDetails);
+				
+				
+				
+
+			}
+
+			@Override
+			public void executeApproval(Event event) {
+				LOG.info("Closing Ticket for Incident: " + event.getIncidentId());
+				
+				updateIncident(event, event.getIncidentId(), "Update Ticket", "Compute and Storage Capacity Normal in DataCenter");
 				
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(60000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
+				TicketServiceRequest requestMessage = new TicketServiceRequest();
+				TicketDetails ticketDetails = new TicketDetails(event.getIncidentId(),
+						"Close Ticket", "Close Ticket");
+				requestMessage.setRequestMessage("Compute and Storage Capacity Normal in DataCenter");
+
+				requestMessage.setRequestType("close");
+				requestMessage.setEventId(event.getId().toString());
+				requestMessage.setTicketDetails(ticketDetails);
+
 				sendRequest(requestMessage);
-				
-				
+
 			}
 		};
 

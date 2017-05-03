@@ -18,9 +18,11 @@ import com.dell.cpsd.scale.api.TicketServiceResponse;
  * </p>
  */
 public class Event {
+
 	private UUID id;
 	private Step currentStep;
 	private ApplicationPerformanceEvent eventDetails;
+	private String incidentId;
 
 	public Event(final UUID id, final ApplicationPerformanceEvent eventDetails, final Step currentStep) {
 		this.id = id;
@@ -54,7 +56,16 @@ public class Event {
 
 	public void setCurrentStep(Step currentStep) {
 		this.currentStep = currentStep;
-	}	
+	}
+	
+
+	public String getIncidentId() {
+		return incidentId;
+	}
+
+	public void setIncidentId(String incidentId) {
+		this.incidentId = incidentId;
+	}
 
 	public void excuteCurrentStep(ApplicationPerformanceEvent message) {
 		this.currentStep.execute(this, message);
@@ -67,5 +78,13 @@ public class Event {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void excuteApproval() {
+		
+		this.currentStep.executeApproval(this);
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

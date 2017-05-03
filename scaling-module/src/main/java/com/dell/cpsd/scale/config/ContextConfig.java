@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ContextConfig extends ConsumerContextConfig
 {
-    private static final String PROVIDER_NAME = "application-performance";
+    private static final String PROVIDER_NAME = "scaling-module";
 
     /**
      * ContextConfig constructor.

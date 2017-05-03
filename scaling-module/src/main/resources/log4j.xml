@@ -12,7 +12,7 @@
 
 
     <logger name="com.dell">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
     </logger>
 
     <logger name="org.springframework">
@@ -20,7 +20,7 @@
     </logger>
 
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="consoleAppender"/>
     </root>
 </log4j:configuration>
