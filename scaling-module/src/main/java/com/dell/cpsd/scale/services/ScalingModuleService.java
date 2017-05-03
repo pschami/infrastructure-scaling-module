@@ -248,10 +248,12 @@ public class ScalingModuleService {
 			public void executeStep(Event event, ApplicationPerformanceEvent message) {
 
 				LOG.info("Raising New Ticket for: "  +  message.getDetails());
+				
+				String ticketTitle = message.getDetails();
 
 				TicketServiceRequest requestMessage = new TicketServiceRequest();
 				TicketDetails ticketDetails = new TicketDetails("",
-						message.getHost() + message.getDetails().substring(0, 9), message.getDetails());
+						message.getHost() + " " + ticketTitle , message.getDetails());
 
 				requestMessage.setRequestMessage(message.getDetails());
 				requestMessage.setRequestType("create");
