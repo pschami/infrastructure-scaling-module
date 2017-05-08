@@ -1,4 +1,5 @@
 [![License](https://img.shields.io/badge/License-EPL%201.0-red.svg)](https://opensource.org/licenses/EPL-1.0)
+[![Build Status](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module.svg?branch=master)](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module)
 # infrastructure-scaling-module
 ## Description
 This module demonstrates how Symphony can be used to evaluate changes in the infrastructure and provide intelligence responses.  In this case the module provides a simplistic state machine which absorbs alerts and decides whether to add additional nodes to a vSphere-based product like VXrack or VXblock both of which can be scaled in terms of aggregate memory and CPU capacity by adding cluster nodes. 
