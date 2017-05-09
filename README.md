@@ -26,8 +26,7 @@ Note: Maven currently relies on internal Dell EMC repositories for build artifac
 ## Building
 Run the following command:  
   
-```
-mvn compile -U clean  
+```  
 mvn install
 ```  
 
