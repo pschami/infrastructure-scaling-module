@@ -30,7 +30,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh "mvn -U clean compile"
+                sh "mvn -U clean compile -DskipTests=true -DskipITs"
             }
         }
         stage('Prepare test services') {
