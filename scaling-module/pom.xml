@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.dell.cpsd.scale</groupId>
         <artifactId>scaling-module-parent</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
   
     <artifactId>scaling-module</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.dell.cpsd.hdp.capability.registry</groupId>
             <artifactId>hdp-capability-registry-api</artifactId>
-            <version>0.1</version>
+            <version>0.2-SNAPSHOT</version>
             <classifier>schemas</classifier>
             <type>zip</type>
             <exclusions>
@@ -54,7 +54,7 @@
             <groupId>com.dell.cpsd.hdp.capability.registry</groupId>
             <artifactId>hdp-capability-registry-client</artifactId>
             <type>jar</type>
-            <version>0.2</version>
+            <version>0.2-SNAPSHOT</version>
             <exclusions>
                 <exclusion>  <!-- declare the exclusion here -->
                     <groupId>org.slf4j</groupId>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>com.dell.cpsd.common.messaging</groupId>
             <artifactId>common-rabbitmq</artifactId>
-            <version>1.3</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.dell.cpsd.component</groupId>
             <artifactId>component-common-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -259,7 +259,7 @@
                     <dependency>
                         <groupId>com.dell.cpsd.common.messaging</groupId>
                         <artifactId>common-contract-enricher</artifactId>
-                        <version>1.3</version>
+                        <version>1.4-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
                 <executions>                    
