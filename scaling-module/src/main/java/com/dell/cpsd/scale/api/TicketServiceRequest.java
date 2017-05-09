@@ -158,7 +158,7 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
 	@Override
 	@JsonProperty("messageProperties")
 	public MessageProperties getMessageProperties() {
-		// TODO Auto-generated method stub
+		
 		return messageProperties;
 	}
 
@@ -169,12 +169,17 @@ public class TicketServiceRequest implements HasMessageProperties<MessagePropert
 
 	}
 
+	/**
+	 * @return ticket details
+	 */
 	@JsonProperty("ticketDetails")
 	public TicketDetails getTicketDetails() {
-		// TODO Auto-generated method stub
 		return ticketDetails;
 	}
 
+	/**
+	 * @param ticketDetails
+	 */
 	@JsonProperty("ticketDetails")
 	public void setTicketDetails(TicketDetails ticketDetails) {
 		this.ticketDetails = ticketDetails;

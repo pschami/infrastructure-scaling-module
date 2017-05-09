@@ -1,6 +1,5 @@
 /**
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
- * VCE Confidential/Proprietary Information
  */
 package com.dell.cpsd.scale.rest;
 
@@ -22,10 +21,12 @@ import com.dell.cpsd.scale.services.ScalingModuleService;
 import io.swagger.annotations.Api;
 
 /**
- * About resource, used to discover status of the system.
+ * Simple Rest APi
+ * 
+ * <hostname>/scale/api/approve/<eventId> 
  * <p>
  * <p>
- * Copyright &copy; 2016 Dell Inc. or its subsidiaries. All Rights Reserved.
+ * Copyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
  * </p>
  */
 @Api
@@ -40,7 +41,10 @@ public class Approve
    
     private final ScalingModuleService scalingModuleService;
 
-   
+    /**
+     * Constructor
+     * @param scalingModuleService
+     */
     @Autowired
     public Approve(final ScalingModuleService scalingModuleService)
     {
@@ -48,18 +52,21 @@ public class Approve
     	this.scalingModuleService = scalingModuleService;
              
     }
+    
+    /**
+     * Handles http get <hostname>/scale/api/approve/<eventId>
+     * and triggers approval handler in scaling module service.
+     * returns 200k with approved text
+     * @param scalingModuleService
+     */
 
     @GET
     @Path("{eventId}")
     public Response approveEvent(@PathParam("eventId") String eventId)
     {
        	
-    	LOG.debug("Approvde Event with Id {}", eventId);
-    	
-    	
-    	
-    	scalingModuleService.processApproval(eventId);
-    	
+    	LOG.debug("Approvde Event with Id {}", eventId);    	
+    	scalingModuleService.processApproval(eventId);    	
         return Response.ok("approved").build();
     }
 }

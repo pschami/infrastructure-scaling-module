@@ -1,4 +1,6 @@
-
+/**
+ * Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
+ */
 package com.dell.cpsd.scale.api;
 
 import java.util.Date;
@@ -11,6 +13,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * Error Json object
+ *
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "code",

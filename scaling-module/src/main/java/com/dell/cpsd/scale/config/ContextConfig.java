@@ -1,6 +1,5 @@
 /**
  * Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
- * VCE Confidential/Proprietary Information
  */
 
 package com.dell.cpsd.scale.config;
@@ -13,10 +12,9 @@ import org.springframework.context.annotation.Configuration;
  * <p>
  * <p/>
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
- * VCE Confidential/Proprietary Information
  * <p/>
  *
- * @since 1.0
+ * @since 0.1
  */
 @Configuration
 public class ContextConfig extends ConsumerContextConfig
@@ -26,21 +24,10 @@ public class ContextConfig extends ConsumerContextConfig
     /**
      * ContextConfig constructor.
      *
-     * @since 1.0
+     * @since 0.1
      */
     public ContextConfig()
     {
         super(PROVIDER_NAME, false);
-    }
-
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public String requestExchange()
-    //    {
-    //        final String provider = PROVIDER_NAME.replace("-", ".");
-    //
-    //        return ProviderExchangeFormatter.formatRequestExchange(provider);
-    //    }
+    } 
 }

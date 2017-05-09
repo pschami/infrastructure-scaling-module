@@ -10,54 +10,48 @@ import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dell.cpsd.common.rabbitmq.consumer.handler.MessageHandler;
-import com.dell.cpsd.scale.api.ApplicationPerformanceEvent;
 import com.dell.cpsd.scale.api.TicketServiceResponse;
 import com.dell.cpsd.scale.services.ScalingModuleService;
 
 /**
- * This class handles Scaling Module messages.
+ * This class handles Ticket Service Response messages.
  * <p>
- * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
+ * Copyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
  * </p>
  *
- * @version 1.0
- * @since 1.0
+ * @version 0.1
+ * @since 0.1
  */
-public class TicketServiceResponseHandler implements MessageHandler<TicketServiceResponse>
-{
-	
-	   private static final Logger LOGGER = LoggerFactory.getLogger(TicketServiceResponseHandler.class);
+public class TicketServiceResponseHandler implements MessageHandler<TicketServiceResponse> {
 
-      /**
-     * The service that actually handles the request
-     */
+	private static final Logger LOGGER = LoggerFactory.getLogger(TicketServiceResponseHandler.class);
 
-	   
-	@Autowired    
+	/**
+	 * The service that actually handles the request
+	 */
+
+	@Autowired
 	private final ScalingModuleService service;
-	
-   
-   public TicketServiceResponseHandler( ScalingModuleService service)
-    {
-       
-        this.service = service;
-    }
-	
-	
+
+	/**
+	 * Constructor
+	 * @param service
+	 */
+	public TicketServiceResponseHandler(ScalingModuleService service) {
+
+		this.service = service;
+	}
+
 	@Override
 	public boolean canHandle(Message message, Object body) {
-		// TODO Auto-generated method stub
 		return TicketServiceResponse.class.isInstance(body);
 	}
 
 	@Override
 	public void handleMessage(TicketServiceResponse message) throws Exception {
 		LOGGER.debug(message.toString());
-		
+
 		service.processTicketServiceResponse(message);
-		
+
 	}
 }
-
-
-

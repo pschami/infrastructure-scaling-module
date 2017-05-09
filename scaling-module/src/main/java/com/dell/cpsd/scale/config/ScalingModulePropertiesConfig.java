@@ -16,8 +16,8 @@ import org.springframework.context.annotation.PropertySources;
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>
  *
- * @version 1.0
- * @since 1.0
+ * @version 0.1
+ * @since 0.1
  */
 @Configuration
 @PropertySources({@PropertySource(value = "classpath:META-INF/spring/apm-nagios/rabbitmq.properties"),

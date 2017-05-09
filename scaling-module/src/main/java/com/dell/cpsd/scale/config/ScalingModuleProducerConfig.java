@@ -4,12 +4,9 @@
 
 package com.dell.cpsd.scale.config;
 
-import com.dell.cpsd.scale.producer.ScalingModuleProducer;
-import com.dell.cpsd.scale.producer.ScalingModuleProducerImpl;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>
  *
- * @version 1.0
- * @since 1.0
+ * @version 0.1
+ * @since 0.1
  */
 @Configuration
 @ComponentScan(ScalingModuleProductionConfig.CONFIG_PACKAGE)
@@ -38,12 +35,7 @@ public class ScalingModuleProducerConfig
 
     @Autowired
     private String hostName;
-
-    @Bean
-    ScalingModuleProducer  applicationPerformancenProducer()
-    {
-        return new ScalingModuleProducerImpl(rabbitTemplate, applicationPerformanceEventExchange);
-    }
+  
   
 }
 

@@ -37,7 +37,7 @@ public class TicketServiceErrorResponse implements HasErrors<Error>, HasMessageP
 	}
 	
 	  public TicketServiceErrorResponse withMessageProperties() {
-	       //TODO: this.messageProperties = messageProperties;
+	       //TODO Auto-generated method stub
 	        return this;
 	    }
 

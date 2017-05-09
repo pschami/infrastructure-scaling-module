@@ -1,4 +1,6 @@
-
+/**
+ * Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
+ */
 package com.dell.cpsd.scale.api;
 
 import java.util.Date;

@@ -47,8 +47,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>
  *
- * @version 1.0
- * @since 1.0
+ * @version 0.1
+ * @since 0.1
  */
 @Configuration
 @Import(ScalingModulePropertiesConfig.class)
@@ -64,7 +64,7 @@ public class ScalingModuleRabbitConfig
     public static final  String BINDING_APM_REQUEST                      = "dell.cpsd.apm.request";
       
     /**
-     * The name of the request queue for Scaling Module service
+     * The name of the events queue for Scaling Module service
      */
     private static final String QUEUE_SCALE_APM_EVENTS                        = "queue.dell.cpsd.scale.apm.events";
     
@@ -110,7 +110,7 @@ public class ScalingModuleRabbitConfig
      * This returns the host name for the service.
      *
      * @return The host name for the service.
-     * @since 1.0
+     * @since 0.1
      */
     @Bean
     String hostName()
@@ -232,7 +232,7 @@ public class ScalingModuleRabbitConfig
      * events.
      *
      * @return The <code>FanoutExchange</code> for Scaling Module messages.
-     * @since 1.0
+     * @since 0.1
      */
     @Bean
     TopicExchange applicationPerformanceEventExchange()
@@ -240,6 +240,10 @@ public class ScalingModuleRabbitConfig
         return new TopicExchange(EXCHANGE_APPLICATION_PERFORMANCE_EVENT);
     }
 
+    /**
+     * The returns the queue for apm events
+     * @return
+     */
    
     @Bean
     Queue scaleApmEventsQueue()
@@ -247,6 +251,10 @@ public class ScalingModuleRabbitConfig
         return new Queue(QUEUE_SCALE_APM_EVENTS);
     }
     
+    /**
+     * The returns the queue for responses
+     * @return
+     */    
     
     @Bean
     Queue scaleResponseQueue()
@@ -259,7 +267,7 @@ public class ScalingModuleRabbitConfig
      * This returns the <code>AmqpAdmin</code> for the connection factory.
      *
      * @return The AMQP admin object for the connection factory.
-     * @since 1.0
+     * @since 0.1
      */
     @Bean
     AmqpAdmin amqpAdmin()

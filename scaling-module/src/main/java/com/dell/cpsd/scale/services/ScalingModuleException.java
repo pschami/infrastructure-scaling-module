@@ -12,8 +12,8 @@ package com.dell.cpsd.scale.services;
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
  * </p>
  *
- * @version 1.0
- * @since 1.0
+ * @version 0.1
+ * @since 0.1
  */
 public class ScalingModuleException extends Exception
 {
@@ -26,7 +26,7 @@ public class ScalingModuleException extends Exception
      * ScalingModuleException constructor.
      *
      * @param message The exception message.
-     * @since 1.0
+     * @since 0.1
      */
     public ScalingModuleException(final String message)
     {
@@ -37,7 +37,7 @@ public class ScalingModuleException extends Exception
      * ScalingModuleException constructor.
      *
      * @param cause The cause of the exception.
-     * @since 1.0
+     * @since 0.1
      */
     public ScalingModuleException(final Throwable cause)
     {
@@ -49,7 +49,7 @@ public class ScalingModuleException extends Exception
      *
      * @param message The exception message.
      * @param cause   The cause of the exception.
-     * @since 1.0
+     * @since 0.1
      */
     public ScalingModuleException(final String message, final Throwable cause)
     {

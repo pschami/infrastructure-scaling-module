@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * 
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Message(value = "com.dell.cpsd.ticket.request", version = "1.0")
 @JsonPropertyOrder({
     "incidentId",
 	"incidentTitle",

@@ -14,50 +14,44 @@ import com.dell.cpsd.scale.api.ApplicationPerformanceEvent;
 import com.dell.cpsd.scale.services.ScalingModuleService;
 
 /**
- * This class handles Scaling Module messages.
+ * This class handles Application Performance Event messages.
  * <p>
- * Copyright &copy; 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
+ * Copyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
  * </p>
  *
- * @version 1.0
- * @since 1.0
+ * @version 0.1
+ * @since 0.1
  */
-public class ApplicationPerformanceEventHandler implements MessageHandler<ApplicationPerformanceEvent>
-{
-	
-	   private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationPerformanceEventHandler.class);
+public class ApplicationPerformanceEventHandler implements MessageHandler<ApplicationPerformanceEvent> {
 
-      /**
-     * The service that actually handles the request
-     */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationPerformanceEventHandler.class);
 
-	   
-	@Autowired    
+	/**
+	 * The service that actually handles the request
+	 */
+
+	@Autowired
 	private final ScalingModuleService service;
-	
-   
-   public ApplicationPerformanceEventHandler( ScalingModuleService service)
-    {
-       
-        this.service = service;
-    }
-	
-	
+
+	/**
+	 * Constructor
+	 * @param service
+	 */
+	public ApplicationPerformanceEventHandler(ScalingModuleService service) {
+
+		this.service = service;
+	}
+
 	@Override
 	public boolean canHandle(Message message, Object body) {
-		// TODO Auto-generated method stub
 		return ApplicationPerformanceEvent.class.isInstance(body);
 	}
 
 	@Override
 	public void handleMessage(ApplicationPerformanceEvent message) throws Exception {
 		LOGGER.debug(message.toString());
-		
+
 		service.processApplicationPerformanceEvent(message);
-	
-		
+
 	}
 }
-
-
-

@@ -1,3 +1,7 @@
+/**
+ * Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
+ */
+
 package com.dell.cpsd.scale.repository;
 
 import java.util.HashMap;
@@ -10,9 +14,9 @@ import com.dell.cpsd.scale.model.Event;
 
 /**
  * Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
- * VCE Confidential/Proprietary Information
  *
- * TODO: Replace with JPA/Hibernate
+ * Simple in memory implementation of an EventRepository
+ * Stores events in a map
   */
 @Repository
 public class InMemoryEventRepository implements EventRepository
