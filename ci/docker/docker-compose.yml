@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+  amqp:
+    image: docker-dev-local.art.local/library/rabbitmq:3-management
+    hostname: rabbit-1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE
+    ports:
+      - "15672"
+    expose:
+      - "5672"
+
+  capability-registry:
+    image: docker-dev-local.art.local/cpsd-core-capability-registry-service
+    network_mode:  "service:amqp"
+  endpoint-registry:
+    image: docker-dev-local.art.local/cpsd-core-endpoint-registry-service
+    network_mode:  "service:amqp"
+
+  coprhd-adapter:
+      image: docker-dev-local.art.local/cpsd-coprhd-adapter-service
+      network_mode:  "service:amqp"
+  rackhd-adapter:
+        image: docker-dev-local.art.local/cpsd-rackhd-adapter-service
+        network_mode:  "service:amqp"
+  vcenter-adapter:
+        image: docker-dev-local.art.local/cpsd-vcenter-adapter-service
+        network_mode:  "service:amqp"
+
+  test_environment:
+    image: docker-dev-local.art.local/library/maven:3.3.9-jdk-8-alpine
+    volumes:
+      - ${WORKSPACE}:/test
+      - ${HOME}/.m2:/root/.m2
+
+    working_dir: /test
+    command: bash -c 'while true; do sleep 2; done'
+    network_mode:  "service:amqp"
