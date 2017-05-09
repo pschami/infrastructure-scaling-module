@@ -16,9 +16,11 @@ Before using this module, download or build the following Project Symphony conta
 * cpsd-coprhd-adapter-service  
 
 Make sure the following is installed:
+
 * Java Development Kit (version 8)
 * Apache Maven 3.0.5+ (including ~/.m2/settings.xml providing relevant repositories)
 * Docker daemon
+* RabbitMQ  3.6.6
 
 Note: Maven currently relies on internal Dell EMC repositories for build artifacts.
 ## Building
