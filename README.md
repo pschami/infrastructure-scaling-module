@@ -2,37 +2,52 @@
 [![Build Status](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module.svg?branch=master)](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module)
 # infrastructure-scaling-module
 ## Description
-This module demonstrates how Symphony can be used to evaluate changes in the infrastructure and provide intelligence responses.  In this case the module provides a simplistic state machine which absorbs alerts and decides whether to add additional nodes to a vSphere-based product like VXrack or VXblock both of which can be scaled in terms of aggregate memory and CPU capacity by adding cluster nodes. 
+This repository demonstrates how Project Symphony can be used to evaluate and provide intelligent responses to changes in infrastructure. The module provides a simplistic state machine that absorbs alerts and decides whether to add additional nodes to a Converged System such as VxRack Flex or VxBlock System, both of which can be scaled for aggregate memory and CPU capacity by adding cluster nodes. 
 
 ## Documentation
-## API overview
-## Before you begin
+You can find additional documentation for Project Symphony at [dellemc-symphony.readthedocs.io][documentation].
 
-Note, you will need to either download or build the following other Symphony containers before using this demo (git clone, mvn install):  
+## Before you begin
+Before using this module, download or build the following Project Symphony containers (git clone, mvn install):  
 * cpsd-core-capability-registry-service
 * cpsd-rackhd-adapter-service
 * cpsd-vcenter-adapter-service
 * cpsd-core-endpoint-registry-service
 * cpsd-coprhd-adapter-service  
 
+Make sure the following is installed:
+
+* Java Development Kit (version 8)
+* Apache Maven 3.0.5+ (including ~/.m2/settings.xml providing relevant repositories)
+* Docker daemon
+* RabbitMQ  3.6.6
+
+Note: Maven currently relies on internal Dell EMC repositories for build artifacts.
 ## Building
-To compile the code and then create a Docker image you will need:
-* Java 8+ SDK
-* maven (including ~/.m2/settings.xml providing relevant repos)
-* docker daemon
-(note that currently maven relies on internal DellEMC repositories for build artifacts)  
+Run the following command:  
   
-```
-mvn compile -U clean  
+```  
 mvn install
 ```  
 
-## Packaging
-The code is packaged in a jar file inside a Docker container.  
+The code is packaged in a JAR file inside a Docker container. 
 ## Deploying
-The docker image will need to connect to a RabbitMQ service on 5672 and to a capability registry.
+The Docker image needs to connect to a RabbitMQ service on port 5672 and to a capability registry.
 
-
-## Deploying
 ## Contributing
+Project Symphony is a collection of services and libraries housed at [GitHub][github].
+Contribute code and make submissions at the relevant GitHub repository level.
+
+See [our documentation][contributing] for details on how to contribute.
+
 ## Community
+Reach out to us on the Slack [#symphony][slack] channel. Request an invite at [{code}Community][codecommunity].
+
+You can also join [Google Groups][googlegroups] and start a discussion.
+
+[documentation]: https://dellemc-symphony.readthedocs.io/en/latest/
+[slack]: https://codecommunity.slack.com/messages/symphony
+[googlegroups]: https://groups.google.com/forum/#!forum/dellemc-symphony
+[codecommunity]: http://community.codedellemc.com/
+[contributing]: http://dellemc-symphony.readthedocs.io/en/latest/contributingtosymphony.html
+[github]: https://github.com/dellemc-symphony
