@@ -30,7 +30,7 @@ services:
 
   test_environment:
     image: docker-dev-local.art.local/library/maven:3.3.9-jdk-8-alpine
-    container_name: symphony-scaling-module-test-${BUILD_NUMBER}
+    container_name: scaling-module-test-${BUILD_NUMBER}
     volumes:
       - ${WORKSPACE}:/test
       - ${HOME}/.m2:/root/.m2
