@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module.svg?branch=master)](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module)
 # infrastructure-scaling-module
 ## Description
-This repository demonstrates how Project Symphony can be used to evaluate and provide intelligent responses to changes in infrastructure. The module provides a simplistic state machine that absorbs alerts and decides whether to add additional nodes to a Dell EMC Converged System such as VxRack FLEX or VxBlock System, both of which can be scaled for aggregate memory and CPU capacity by adding cluster nodes. 
+This repository demonstrates how Project Symphony can be used to evaluate and provide intelligent responses to infrastructure changes. It absorbs alerts and decides whether to add additional nodes to a Dell EMC Converged System such as VxRack FLEX or VxBlock System, both of which can be scaled for aggregate memory and CPU capacity by adding cluster nodes. 
 
 ## Documentation
 You can find additional documentation for Project Symphony at [dellemc-symphony.readthedocs.io][documentation].
@@ -15,14 +15,14 @@ Before using this module, download or build the following Project Symphony conta
 * cpsd-core-endpoint-registry-service
 * cpsd-coprhd-adapter-service  
 
-Make sure the following is installed:
+Verify that the following tools are installed:
 
 * Java Development Kit (version 8)
 * Apache Maven 3.0.5+ (including ~/.m2/settings.xml providing relevant repositories)
 * Docker daemon
 * RabbitMQ  3.6.6
 
-Note: Maven currently relies on internal Dell EMC repositories for build artifacts.
+**Note:** Maven currently relies on internal Dell EMC repositories for build artifacts.
 ## Building
 Run the following command:  
   
@@ -36,12 +36,11 @@ The Docker image needs to connect to a RabbitMQ service on port 5672 and to a ca
 
 ## Contributing
 Project Symphony is a collection of services and libraries housed at [GitHub][github].
-Contribute code and make submissions at the relevant GitHub repository level.
 
-See [our documentation][contributing] for details on how to contribute.
+Contribute code and make submissions at the relevant GitHub repository level. See [our documentation][contributing] for details on how to contribute.
 
 ## Community
-Reach out to us on the Slack [#symphony][slack] channel. Request an invite at [{code}Community][codecommunity].
+Reach out to us on the Slack [#symphony][slack] channel by requesting an invite at [{code}Community][codecommunity].
 
 You can also join [Google Groups][googlegroups] and start a discussion.
 
