@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module.svg?branch=master)](https://travis-ci.org/dellemc-symphony/infrastructure-scaling-module)
 # infrastructure-scaling-module
 ## Description
-This repository demonstrates how Project Symphony can be used to evaluate and provide intelligent responses to infrastructure changes. It absorbs alerts and decides whether to add additional nodes to a Dell EMC Converged System such as VxRack FLEX or VxBlock System, both of which can be scaled for aggregate memory and CPU capacity by adding cluster nodes. 
+This repository demonstrates how Project Symphony can be used to evaluate and provide intelligent responses to infrastructure changes. It absorbs alerts and decides whether to add additional nodes to a Dell EMC Converged System such as a VxRack FLEX or VxBlock System, both of which can be scaled for aggregate memory and CPU capacity by adding cluster nodes. 
 
 ## Documentation
 You can find additional documentation for Project Symphony at [dellemc-symphony.readthedocs.io][documentation].
