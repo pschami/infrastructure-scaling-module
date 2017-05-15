@@ -56,7 +56,7 @@ pipeline {
                 }
             }
             steps {
-                sh "mvn deploy -DskipTests=true -DskipITs -P buildDockerImageOnJenkins -Ddocker.registry=docker-dev-local.art.local"
+		sh "mvn deploy -P buildDockerImageOnJenkins -DdockerImage.tag=infrastructure-scaling-model-develop.${env.BUILD_NUMBER} -Ddocker.registry=docker-dev-local.art.local -DdeleteDockerImages=true -DskipTests=true -DskipITs"
             }
         }
         stage('SonarQube Analysis') {
